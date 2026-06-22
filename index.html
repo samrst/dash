@@ -11,7 +11,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="/CSS/style.css">
 </head>
 <body>
 
@@ -46,6 +46,9 @@
         <p>
             SENAI Bahia — Dashboard Unificado
         </p>
+        <p>
+            Atualizado em: 22/06/2026 14:30
+        </p>
     </section>
 
 </header>
@@ -63,11 +66,16 @@
     <!-- KPIs -->
     <section class="kpi-grid">
         <div class="kpi-card">
-            <span class="kpi-label">Total de Alunos</span>
-            <span class="kpi-value" id="kpi-total">0</span>
+            <span class="kpi-label">Total de Alunos Prova Objetiva</span>
+            <span class="kpi-value" id="kpi-objetivo">0</span>
         </div>
         <div class="kpi-card">
-            <span class="kpi-label">Provas Agendadas</span>
+            <span class="kpi-label">Total de Agendamentos</span>
+            <span class="kpi-value" id="kpi-total">0</span>
+            <span class="kpi-sub" id="kpi-total-pct">0%</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Provas Aplicadas</span>
             <span class="kpi-value" id="kpi-aplicadas">0</span>
             <span class="kpi-sub" id="kpi-aplicadas-pct">0%</span>
         </div>
@@ -160,6 +168,6 @@
         <p>© 2026 SENAI — Uso interno restrito</p>
     </footer>
 
-<script src="JS/script.js"></script>
+<script src="/JS/script.js"></script>
 </body>
 </html>
