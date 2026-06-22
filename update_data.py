@@ -34,16 +34,33 @@ def process_excel(file_path, output_json='data.json'):
         df['_provas_nao_aplicadas'] = pd.to_numeric(df['Provas Aptas'], errors='coerce').fillna(0).astype(int)
         df['_tabulacao_feita'] = pd.to_numeric(df['Tabulação Feita'], errors='coerce').fillna(0).astype(int)
         df['_tabulacao_pendente'] = pd.to_numeric(df['Tabulação Pendente'], errors='coerce').fillna(0).astype(int)
-        df['_total_alunos'] = pd.to_numeric(df['Total'], errors='coerce').fillna(0).astype(int)
+        df['_total_alunos'] = pd.to_numeric(
+        df['Alunos Homologados'],
+            errors='coerce'
+        ).fillna(0).astype(int)
+
+        df['_prova_objetiva'] = pd.to_numeric(
+            df['Prova Objetiva'],
+            errors='coerce'
+        ).fillna(0).astype(int)
 
         # --- 3. LIMPEZA E EXPORTAÇÃO ---
         df[col_agendamento] = df[col_agendamento].dt.strftime('%d/%m/%Y %H:%M').fillna('Não Informado')
         
         cols_to_keep = [
-            'Unidade operacional (Escola)', 'Curso', 'Modalidade', 'Turma', 
-            col_agendamento, '_turno', '_mes', 
-            '_provas_aplicadas', '_provas_nao_aplicadas', 
-            '_tabulacao_feita', '_tabulacao_pendente', '_total_alunos'
+            'Unidade operacional (Escola)',
+            'Curso',
+            'Modalidade',
+            'Turma',
+            col_agendamento,
+            '_turno',
+            '_mes',
+            '_provas_aplicadas',
+            '_provas_nao_aplicadas',
+            '_tabulacao_feita',
+            '_tabulacao_pendente',
+            '_total_alunos',
+            '_prova_objetiva'
         ]
         
         data = df[cols_to_keep].to_dict(orient='records')
