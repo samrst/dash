@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SENAI BA - Gestão de Avaliações</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/CSS/style.css">
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p>Aguardando planilha...</p>
+    <input type="file" id="file-input" accept=".xlsx,.xls" style="display: none;">
+    <button class="btn-import" onclick="document.getElementById('file-input').click()">Importar Planilha</button>
+</div>
+
+<header>
+
+    <nav>
+        <img src="./IMG/logo-senai.png" width="100" alt="Logo Senai">
+
+        <h2 class="logo">SENAI | SAEP</h2>
+
+        <div class="nav-actions">
+            <button
+                class="btn-header-update"
+                onclick="document.getElementById('file-input').click()">
+                Atualizar Dados
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <p class="hero-eyebrow">Plataforma Interna</p>
+
+        <h1>Gestão de Avaliações Práticas</h1>
+
+        <p>
+            SENAI Bahia — Dashboard Unificado
+        </p>
+    </section>
+
+</header>
+
+<main class="container" id="main-content">
+    <!-- Filtros -->
+    <section class="filters-panel">
+        <div class="filter-group"><label>Unidade</label><select id="filter-unidade"><option value="ALL">Todas</option></select></div>
+        <div class="filter-group"><label>Curso</label><select id="filter-curso"><option value="ALL">Todos</option></select></div>
+        <div class="filter-group"><label>Modalidade</label><select id="filter-modalidade"><option value="ALL">Todas</option></select></div>
+        <div class="filter-group"><label>Turno</label><select id="filter-turno"><option value="ALL">Todos</option></select></div>
+        <div class="filter-group"><label>Mês</label><select id="filter-mes"><option value="ALL">Todos</option></select></div>
+    </section>
+
+    <!-- KPIs -->
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <span class="kpi-label">Total de Alunos</span>
+            <span class="kpi-value" id="kpi-total">0</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Provas Agendadas</span>
+            <span class="kpi-value" id="kpi-aplicadas">0</span>
+            <span class="kpi-sub" id="kpi-aplicadas-pct">0%</span>
+        </div>
+        <div class="kpi-card concluido">
+            <span class="kpi-label">Tabulações Feitas</span>
+            <span class="kpi-value" id="kpi-feitas">0</span>
+            <span class="kpi-sub" id="kpi-feitas-pct">0%</span>
+        </div>
+        <div class="kpi-card pendente">
+            <span class="kpi-label">Tabulações Pendentes</span>
+            <span class="kpi-value" id="kpi-pendentes">0</span>
+        </div>
+    </section>
+
+    <!-- Gráficos de Volume -->
+    <h2 class="section-divider">1. Volume de Alunos e Homologação</h2>
+    <section class="charts-grid">
+        <div class="card">
+            <h3 class="card-title">Alunos por Escola</h3>
+            <div style="height: 350px;"><canvas id="chart-alunos-escola"></canvas></div>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Homologados vs Agendados por Turma</h3>
+            <div class="scrollspy-viewport" id="chart-homologacao-viewport">
+                <div class="scrollspy-inner" id="chart-homologacao-wrapper">
+                    <canvas id="chart-homologacao"></canvas>
+                </div>
+                <div class="scrollspy-indicator" id="chart-homologacao-indicator">0 itens</div>
+                <button type="button" class="scrollspy-top" id="chart-homologacao-top" title="Voltar ao topo" aria-label="Voltar ao topo">↑</button>
+            </div>
+            <p class="chart-hint" id="chart-homologacao-hint"></p>
+        </div>
+    </section>
+
+    <!-- Gráficos de Aplicação -->
+    <h2 class="section-divider">2. Status de Aplicação (Agendamento)</h2>
+    <section class="charts-grid">
+        <div class="card">
+            <h3 class="card-title">Provas Aplicadas vs Não Aplicadas</h3>
+            <div style="height: 350px;"><canvas id="chart-aplicacao"></canvas></div>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Visão Geral de Aplicação</h3>
+            <div style="height: 350px;"><canvas id="chart-aplicacao-pizza"></canvas></div>
+        </div>
+    </section>
+
+    <!-- Gráficos de Tabulação -->
+    <h2 class="section-divider">3. Status de Tabulação (Registro)</h2>
+    <section class="charts-grid">
+        <div class="card">
+            <h3 class="card-title">Tabulação Feita vs Pendente por Curso</h3>
+            <div style="height: 350px;"><canvas id="chart-tabulacao"></canvas></div>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Eficiência de Tabulação</h3>
+            <div style="height: 350px;"><canvas id="chart-tabulacao-pizza"></canvas></div>
+        </div>
+    </section>
+
+    <!-- Tabela -->
+    <section class="card">
+        <h3 class="card-title">Detalhamento Geral</h3>
+        <div class="scrollspy-viewport is-scrollable scrollspy-table" id="table-viewport">
+            <div class="scrollspy-inner table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Unidade</th>
+                            <th>Curso</th>
+                            <th>Turma</th>
+                            <th>Alunos</th>
+                            <th>Agendadas</th>
+                            <th>Não Aplic.</th>
+                            <th>Tab. Feita</th>
+                            <th>Tab. Pend.</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+            <div class="scrollspy-indicator" id="table-indicator">0 linhas</div>
+            <button type="button" class="scrollspy-top" id="table-top" title="Voltar ao topo" aria-label="Voltar ao topo">↑</button>
+        </div>
+        <p class="chart-hint" id="table-hint"></p>
+    </section>
+</main>
+
+    <footer>
+        <p>© 2026 SENAI — Uso interno restrito</p>
+    </footer>
+
+<script src="/JS/script.js"></script>
+</body>
+</html>
