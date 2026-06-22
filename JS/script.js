@@ -62,15 +62,40 @@ function handleFile(e) {
 
                 return {
                     ...d,
+
                     '_turno': turno,
                     '_mes': mes,
-                    '_total_alunos':       pick(d, ['Alunos Homologados', 'Total', '_total_alunos']),
-                    '_provas_aplicadas':   pick(d, ['Provas Aplicadas', 'Status de Geração', '_provas_aplicadas']),
-                    '_provas_nao_aplicadas': pick(d, ['Provas Não Aplicadas', 'Provas Aptas', '_provas_nao_aplicadas']),
-                    '_tabulacao_feita':    pick(d, ['Tabulação Feita', '_tabulacao_feita']),
-                    '_tabulacao_pendente': pick(d, ['Tabulação Pendente', '_tabulacao_pendente'])
-                };
-            });
+
+                    '_prova_objetiva': pick(
+                        d,
+                        ['Prova Objetiva', '_prova_objetiva']
+                    ),
+
+                    '_total_alunos': pick(
+                        d,
+                        ['Alunos Homologados', 'Total', '_total_alunos']
+                    ),
+
+                    '_provas_aplicadas': pick(
+                        d,
+                        ['Provas Aplicadas', 'Status de Geração', '_provas_aplicadas']
+                    ),
+
+                    '_provas_nao_aplicadas': pick(
+                        d,
+                        ['Provas Não Aplicadas', 'Provas Aptas', '_provas_nao_aplicadas']
+                    ),
+
+                    '_tabulacao_feita': pick(
+                        d,
+                        ['Tabulação Feita', '_tabulacao_feita']
+                    ),
+
+                    '_tabulacao_pendente': pick(
+                        d,
+                        ['Tabulação Pendente', '_tabulacao_pendente']
+                    )
+                }; });
 
             initDashboard();
         } catch (err) {
@@ -129,16 +154,19 @@ function applyFilters() {
 function updateKPIs() {
     const sum = key => filteredData.reduce((a, b) => a + (b[key] || 0), 0);
     const total     = sum('_total_alunos');
+    const objetivo  = sum('_prova_objetiva');
     const aplicadas = sum('_provas_aplicadas');
     const feitas    = sum('_tabulacao_feita');
     const pendentes = sum('_tabulacao_pendente');
 
     document.getElementById('kpi-total').textContent     = total.toLocaleString('pt-BR');
+    document.getElementById('kpi-objetivo').textContent  = objetivo.toLocaleString('pt-BR');
     document.getElementById('kpi-aplicadas').textContent = aplicadas.toLocaleString('pt-BR');
     document.getElementById('kpi-feitas').textContent    = feitas.toLocaleString('pt-BR');
     document.getElementById('kpi-pendentes').textContent = pendentes.toLocaleString('pt-BR');
 
-    document.getElementById('kpi-aplicadas-pct').textContent = (total ? Math.round(aplicadas / total * 100) : 0) + '% do Total';
+    document.getElementById('kpi-total-pct').textContent = (total ? Math.round(aplicadas / total * 100) : 0) + '% do Total';
+    document.getElementById('kpi-aplicadas-pct').textContent = (total ? Math.round(aplicadas / total * 100) : 0) + '% das Agendadas';
     document.getElementById('kpi-feitas-pct').textContent    = (aplicadas ? Math.round(feitas / aplicadas * 100) : 0) + '% das Aplicadas';
 }
 
