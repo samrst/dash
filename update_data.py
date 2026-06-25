@@ -34,6 +34,10 @@ def process_excel(file_path, output_json='data.json'):
         df['_provas_nao_aplicadas'] = pd.to_numeric(df['Provas Aptas'], errors='coerce').fillna(0).astype(int)
         df['_tabulacao_feita'] = pd.to_numeric(df['Tabulação Feita'], errors='coerce').fillna(0).astype(int)
         df['_tabulacao_pendente'] = pd.to_numeric(df['Tabulação Pendente'], errors='coerce').fillna(0).astype(int)
+        df['_total_provas_geradas'] = pd.to_numeric(
+        df['Total de Provas Geradas'],
+            errors='coerce'
+        ).fillna(0).astype(int)
         df['_total_alunos'] = pd.to_numeric(
         df['Alunos Homologados'],
             errors='coerce'
@@ -55,6 +59,7 @@ def process_excel(file_path, output_json='data.json'):
             col_agendamento,
             '_turno',
             '_mes',
+            '_total_provas_geradas',
             '_provas_aplicadas',
             '_provas_nao_aplicadas',
             '_tabulacao_feita',
