@@ -71,6 +71,11 @@ function handleFile(e) {
                         ['Prova Objetiva', '_prova_objetiva']
                     ),
 
+                    '_total_provas_geradas': pick(
+                        d,
+                        ['Total de Provas Geradas', '_total_provas_geradas']
+                    ),
+
                     '_total_alunos': pick(
                         d,
                         ['Alunos Homologados', 'Total', '_total_alunos']
@@ -153,19 +158,30 @@ function applyFilters() {
 
 function updateKPIs() {
     const sum = key => filteredData.reduce((a, b) => a + (b[key] || 0), 0);
-    const total     = sum('_total_alunos');
+    const total     = sum('_total_provas_geradas');
     const objetivo  = sum('_prova_objetiva');
+    const homologados = sum('_total_alunos');
     const aplicadas = sum('_provas_aplicadas');
     const feitas    = sum('_tabulacao_feita');
     const pendentes = sum('_tabulacao_pendente');
 
     document.getElementById('kpi-total').textContent     = total.toLocaleString('pt-BR');
     document.getElementById('kpi-objetivo').textContent  = objetivo.toLocaleString('pt-BR');
+    document.getElementById('kpi-homologados').textContent = homologados.toLocaleString('pt-BR');
     document.getElementById('kpi-aplicadas').textContent = aplicadas.toLocaleString('pt-BR');
     document.getElementById('kpi-feitas').textContent    = feitas.toLocaleString('pt-BR');
     document.getElementById('kpi-pendentes').textContent = pendentes.toLocaleString('pt-BR');
 
-    document.getElementById('kpi-total-pct').textContent = (total ? Math.round(aplicadas / total * 100) : 0) + '% do Total';
+    document.getElementById('kpi-homologados-pct').textContent =
+    (objetivo
+        ? Math.round(homologados / objetivo * 100)
+        : 0
+    ) + '% da Prova Objetiva';
+    document.getElementById('kpi-total-pct').textContent =
+    (homologados
+        ? Math.round(total / homologados * 100)
+        : 0
+    ) + '% dos Homologados';
     document.getElementById('kpi-aplicadas-pct').textContent = (total ? Math.round(aplicadas / total * 100) : 0) + '% das Agendadas';
     document.getElementById('kpi-feitas-pct').textContent    = (aplicadas ? Math.round(feitas / aplicadas * 100) : 0) + '% das Aplicadas';
 }
@@ -180,8 +196,8 @@ function updateCharts() {
     renderBar('chart-alunos-escola', Object.keys(dataAlunos),
         [{ label: 'Qtd Alunos', data: Object.values(dataAlunos), color: '#005599' }], 'x', false);
 
-    // 2. Homologados vs Agendados — BARRAS agrupadas por Turma
-    const groupKey = 'Turma';
+    // 2. Homologados vs Agendados — BARRAS agrupadas por Curso
+    const groupKey = 'Curso';
     const groupAgg = {};
     filteredData.forEach(d => {
         const k = (d[groupKey] || 'S/I').toString();
@@ -207,7 +223,7 @@ function updateCharts() {
     if (horizontal) {
         viewport.classList.add('is-scrollable');
         wrapper.style.height = (labels.length * ROW_H + 40) + 'px';
-        hint.textContent = `${labels.length} turmas — role para ver todas.`;
+        hint.textContent = `${labels.length} cursos — role para ver todos.`;
     } else {
         viewport.classList.remove('is-scrollable');
         wrapper.style.height = '350px';
