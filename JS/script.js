@@ -3,7 +3,7 @@ let filteredData = [];
 let charts = {};
 
 const fileInput = document.getElementById('file-input');
-const filters = ['unidade', 'curso', 'modalidade', 'turno', 'mes'];
+const filters = ['unidade', 'curso', 'modalidade'];
 
 // Event Listeners
 fileInput.addEventListener('change', handleFile);
@@ -45,26 +45,8 @@ function handleFile(e) {
             });
 
             rawData = cleanJson.map(d => {
-                const dtRaw = d['Agendamento (horário de Brasília)'];
-                let date = new Date(dtRaw);
-                if (typeof dtRaw === 'number') date = new Date((dtRaw - 25569) * 86400 * 1000);
-
-                let turno = "Não Informado";
-                let mes = "Não Informado";
-
-                if (date instanceof Date && !isNaN(date.getTime())) {
-                    const h = date.getHours();
-                    if (h >= 5 && h < 12) turno = "Matutino";
-                    else if (h >= 12 && h < 18) turno = "Vespertino";
-                    else turno = "Noturno";
-                    mes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"][date.getMonth()];
-                }
-
                 return {
                     ...d,
-
-                    '_turno': turno,
-                    '_mes': mes,
 
                     '_prova_objetiva': pick(
                         d,
@@ -146,9 +128,10 @@ function applyFilters() {
     filteredData = rawData.filter(d => {
         return (vals.unidade === 'ALL'    || d['Unidade operacional (Escola)'] === vals.unidade) &&
                (vals.curso === 'ALL'      || d['Curso'] === vals.curso) &&
-               (vals.modalidade === 'ALL' || d['Modalidade'] === vals.modalidade) &&
-               (vals.turno === 'ALL'      || d['_turno'] === vals.turno) &&
-               (vals.mes === 'ALL'        || d['_mes'] === vals.mes);
+               (vals.modalidade === 'ALL' || d['Modalidade'] === vals.modalidade) //&&
+              // (vals.turno === 'ALL'      || d['_turno'] === vals.turno) &&
+               //(vals.mes === 'ALL'        || d['_mes'] === vals.mes)
+               ;
     });
 
     updateKPIs();
@@ -184,18 +167,36 @@ function updateKPIs() {
     ) + '% dos Homologados';
     document.getElementById('kpi-aplicadas-pct').textContent = (total ? Math.round(aplicadas / total * 100) : 0) + '% das Agendadas';
     document.getElementById('kpi-feitas-pct').textContent    = (aplicadas ? Math.round(feitas / aplicadas * 100) : 0) + '% das Aplicadas';
+    document.getElementById('kpi-pendentes-pct').textContent = (aplicadas ? Math.round(pendentes / aplicadas * 100) : 0) + '% das Aplicadas';
 }
 
 function updateCharts() {
     // 1. Alunos por Escola
     const dataAlunos = {};
+
+    const mostrarPorCurso =
+        document.getElementById('filter-unidade').value !== 'ALL';
+
     filteredData.forEach(d => {
-        const k = d['Unidade operacional (Escola)'] || "S/I";
+
+        const k = mostrarPorCurso
+            ? (d['Curso'] || 'S/I')
+            : (d['Unidade operacional (Escola)'] || 'S/I');
+
         dataAlunos[k] = (dataAlunos[k] || 0) + d._total_alunos;
     });
-    renderBar('chart-alunos-escola', Object.keys(dataAlunos),
-        [{ label: 'Qtd Alunos', data: Object.values(dataAlunos), color: '#005599' }], 'x', false);
 
+    renderBar(
+        'chart-alunos-escola',
+        Object.keys(dataAlunos),
+        [{
+            label: 'Qtd Alunos',
+            data: Object.values(dataAlunos),
+            color: '#005599'
+        }],
+        'x',
+        false
+    );
     // 2. Homologados vs Agendados — BARRAS agrupadas por Curso
     const groupKey = 'Curso';
     const groupAgg = {};
@@ -241,16 +242,43 @@ function updateCharts() {
 
     // 3. Aplicação por Escola
     const dataApp = {};
-    filteredData.forEach(d => {
-        const k = d['Unidade operacional (Escola)'] || "Outros";
-        if (!dataApp[k]) dataApp[k] = { v1: 0, v2: 0 };
-        dataApp[k].v1 += d._provas_aplicadas;
-        dataApp[k].v2 += d._provas_nao_aplicadas;
-    });
-    renderBar('chart-aplicacao', Object.keys(dataApp),
-        [{ label: 'Aplicadas',     data: Object.values(dataApp).map(v => v.v1), color: '#005599' },
-         { label: 'Não Aplicadas', data: Object.values(dataApp).map(v => v.v2), color: '#94a3b8' }], 'x', true);
 
+        filteredData.forEach(d => {
+
+            const k =
+                document.getElementById('filter-unidade').value === 'ALL'
+                    ? (d['Unidade operacional (Escola)'] || 'Outros')
+                    : (d['Curso'] || 'Outros');
+
+            if (!dataApp[k]) {
+                dataApp[k] = {
+                    v1: 0,
+                    v2: 0
+                };
+            }
+
+            dataApp[k].v1 += d._provas_aplicadas;
+            dataApp[k].v2 += d._provas_nao_aplicadas;
+        });
+
+renderBar(
+    'chart-aplicacao',
+    Object.keys(dataApp),
+    [
+        {
+            label: 'Aplicadas',
+            data: Object.values(dataApp).map(v => v.v1),
+            color: '#005599'
+        },
+        {
+            label: 'Não Aplicadas',
+            data: Object.values(dataApp).map(v => v.v2),
+            color: '#94a3b8'
+        }
+    ],
+    'x',
+    true
+);
     // 4. Tabulação por Curso
     const dataTab = {};
     filteredData.forEach(d => {
@@ -338,7 +366,6 @@ function updateTable() {
         <tr>
             <td>${d['Unidade operacional (Escola)'] || '-'}</td>
             <td>${(d['Curso'] || '-').substring(0, 25)}</td>
-            <td>${d['Turma'] || '-'}</td>
             <td>${d['_total_alunos']}</td>
             <td>${d['_provas_aplicadas']}</td>
             <td>${d['_provas_nao_aplicadas']}</td>
