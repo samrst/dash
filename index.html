@@ -47,7 +47,7 @@
             SENAI Bahia — Dashboard Unificado
         </p>
         <p>
-            Atualizado em: 22/06/2026 16:30
+            Atualizado em: 26/06/2026 09:30
         </p>
     </section>
 
@@ -59,39 +59,58 @@
         <div class="filter-group"><label>Unidade</label><select id="filter-unidade"><option value="ALL">Todas</option></select></div>
         <div class="filter-group"><label>Curso</label><select id="filter-curso"><option value="ALL">Todos</option></select></div>
         <div class="filter-group"><label>Modalidade</label><select id="filter-modalidade"><option value="ALL">Todas</option></select></div>
-        <div class="filter-group"><label>Turno</label><select id="filter-turno"><option value="ALL">Todos</option></select></div>
-        <div class="filter-group"><label>Mês</label><select id="filter-mes"><option value="ALL">Todos</option></select></div>
+        <!-- <div class="filter-group"><label>Turno</label><select id="filter-turno"><option value="ALL">Todos</option></select></div>
+        <div class="filter-group"><label>Mês</label><select id="filter-mes"><option value="ALL">Todos</option></select></div>-->
     </section>
 
     <!-- KPIs -->
     <section class="kpi-grid">
         <div class="kpi-card">
-            <span class="kpi-label">Total de Alunos Prova Objetiva</span>
-            <span class="kpi-value" id="kpi-objetivo">0</span>
+            <div class="kpi-header">
+                <span class="kpi-label">Total de Alunos Prova Objetiva</span>
+            </div>
+            <div class="kpi-value" id="kpi-objetivo">0</div>
+            <div class="kpi-sub">Número de alunos aptos para a Prova Prática</div>
         </div>
         <div class="kpi-card">
-            <span class="kpi-label">Total de Alunos Homologados</span>
-            <span class="kpi-value" id="kpi-homologados">0</span>
-            <span class="kpi-sub" id="kpi-homologados-pct">0%</span>
+            <div class="kpi-header">
+                <span class="kpi-label">Total de Alunos Homologados</span>
+                <span class="kpi-badge" id="kpi-homologados-pct">0%</span>
+            </div>
+            <div class="kpi-value" id="kpi-homologados">0</div>
+            <div class="kpi-sub">Em relação à Prova Objetiva</div>
         </div>
         <div class="kpi-card">
-            <span class="kpi-label">Total de Agendamentos Prova Prática</span>
-            <span class="kpi-value" id="kpi-total">0</span>
-            <span class="kpi-sub" id="kpi-total-pct">0%</span>
+            <div class="kpi-header">
+                <span class="kpi-label">Total de Agendamentos Prova Prática</span>
+                <span class="kpi-badge" id="kpi-total-pct">0%</span>
+            </div>
+            <div class="kpi-value" id="kpi-total">0</div>
+            <div class="kpi-sub">Em relação ao número de homologados</div>
         </div>
         <div class="kpi-card">
-            <span class="kpi-label">Exames Gerados</span>
-            <span class="kpi-value" id="kpi-aplicadas">0</span>
-            <span class="kpi-sub" id="kpi-aplicadas-pct">0%</span>
+            <div class="kpi-header">
+                <span class="kpi-label">Exames Gerados</span>
+                <span class="kpi-badge" id="kpi-aplicadas-pct">0%</span>
+            </div>
+            <div class="kpi-value" id="kpi-aplicadas">0</div>
+            <div class="kpi-sub">Em relação aos agendamentos</div>
         </div>
-        <div class="kpi-card concluido">
-            <span class="kpi-label">Tabulações Feitas</span>
-            <span class="kpi-value" id="kpi-feitas">0</span>
-            <span class="kpi-sub" id="kpi-feitas-pct">0%</span>
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <span class="kpi-label">Tabulações Feitas</span>
+                <span class="kpi-badge" id="kpi-feitas-pct">0%</span>
+            </div>
+            <div class="kpi-value" id="kpi-feitas">0</div>
+            <div class="kpi-sub">Em relação as provas aplicadas</div>
         </div>
-        <div class="kpi-card pendente">
-            <span class="kpi-label">Tabulações Pendentes</span>
-            <span class="kpi-value" id="kpi-pendentes">0</span>
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <span class="kpi-label">Tabulações Pendentes</span>
+                <span class="kpi-badge" id="kpi-pendentes-pct">0%</span>
+            </div>
+            <div class="kpi-value" id="kpi-pendentes">0</div>
+            <div class="kpi-sub">Em relação as provas aplicadas</div>
         </div>
     </section>
 
@@ -151,7 +170,7 @@
                         <tr>
                             <th>Unidade</th>
                             <th>Curso</th>
-                            <th>Turma</th>
+                            <!-- <th>Turma</th> -->
                             <th>Alunos</th>
                             <th>Agendadas</th>
                             <th>Não Aplic.</th>
