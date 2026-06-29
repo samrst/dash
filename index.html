@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard SENAI BA - Gestão de Avaliações</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,9 +47,6 @@
 
         <p>
             SENAI Bahia — Dashboard Unificado
-        </p>
-        <p>
-            Atualizado em: 26/06/2026 11:00
         </p>
     </section>
 
@@ -160,6 +158,16 @@
             <div style="height: 350px;"><canvas id="chart-tabulacao-pizza"></canvas></div>
         </div>
     </section>
+
+    <div class="card card-full">
+    <h2 class="card-title">
+        Participação na Prova Prática (% da Objetiva)
+    </h2>
+
+    <div class="chart-large">
+        <canvas id="chart-percentual-pratica"></canvas>
+    </div>
+</div>
 
     <!-- Tabela -->
     <section class="card">
