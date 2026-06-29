@@ -147,7 +147,7 @@ function updateCharts() {
     }).sort((a, b) => a.p - b.p);
 
     renderBar('chart-percentual-pratica', resPct.map(r => r.n), [{
-    label: '% da Prova Objetiva',
+    label: '% em relação a Prova Objetiva',
     data: resPct.map(r => r.p),
     alunos: resPct.map(r => r.l), // adiciona esta linha
     backgroundColor: resPct.map(r => r.p < 50 ? '#ef4444' : (r.p < 80 ? '#94a3b8' : '#003DA5'))
