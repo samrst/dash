@@ -76,8 +76,8 @@ function updateKPIs() {
         'homologados-pct': [vals.homologados, vals.objetivo, 'da Prova Objetiva'],
         'total-pct': [vals.total, vals.homologados, 'dos Homologados'],
         'aplicadas-pct': [vals.aplicadas, vals.total, 'das Agendadas'],
-        'feitas-pct': [vals.feitas, vals.aplicadas, 'das Aplicadas'],
-        'pendentes-pct': [vals.pendentes, vals.aplicadas, 'das Aplicadas']
+        'feitas-pct': [vals.feitas, vals.aplicadas, 'das Geradas'],
+        'pendentes-pct': [vals.pendentes, vals.aplicadas, 'das Geradas']
     };
     Object.entries(pcts).forEach(([id, [v, total, msg]]) => {
         if ($(`kpi-${id}`)) $(`kpi-${id}`).textContent = (total ? Math.round(v / total * 100) : 0) + '% ' + msg;
